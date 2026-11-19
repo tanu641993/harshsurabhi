@@ -1,13 +1,12 @@
 /*
- * Auto tour: once the page has fully loaded, the key inserts itself into the
- * lock (same as a tap), the invitation opens, and the page scrolls slowly from
- * top to bottom.
+ * Auto tour: after the guest taps to unlock, the page scrolls slowly from top
+ * to bottom. The tap also allows audio playback under browser autoplay rules.
  *
  * - Any user interaction (wheel, touch, click, key) pauses the scroll; it
  *   resumes after RESUME_AFTER_MS of inactivity.
  * - It stays paused while the guest is typing in the RSVP form.
  * - Music attempts to autoplay where browser policy allows; if blocked, it
- *   starts on the guest's first touch/click/key press instead.
+ *   starts on the guest's first real interaction.
  */
 (function () {
   "use strict";
@@ -35,6 +34,25 @@
     });
   }
 
+  function waitForOpen(site) {
+    return new Promise(function (resolve) {
+      if (!site) return resolve(false);
+      if (site.classList.contains("is-open")) return resolve(true);
+
+      var observer = new MutationObserver(function () {
+        if (site.classList.contains("is-open")) {
+          observer.disconnect();
+          resolve(true);
+        }
+      });
+      observer.observe(site, { attributes: true, attributeFilter: ["class"] });
+      if (site.classList.contains("is-open")) {
+        observer.disconnect();
+        resolve(true);
+      }
+    });
+  }
+
   function pageLoaded() {
     return new Promise(function (resolve) {
       if (document.readyState === "complete") resolve();
@@ -53,11 +71,22 @@
 
   /* ---------------- resume music on first real gesture ---------------- */
   var musicTried = false;
-  function startMusicOnce() {
+  function startMusicOnce(event) {
     if (musicTried) return;
+    var target = event && event.target;
+    if (target && target.closest && target.closest(".music-toggle-btn")) return;
+
+    var audio = $("main.site audio");
+    if (!audio || !audio.paused) return;
+
     musicTried = true;
-    var btn = $(".music-toggle-btn");
-    if (btn && btn.classList.contains("is-paused")) btn.click();
+    audio.play().catch(function (error) {
+      if (error && error.name === "NotAllowedError") {
+        musicTried = false;
+        return;
+      }
+      console.error("Background music playback failed.", error);
+    });
   }
 
   /* ---------------- slow auto-scroll ---------------- */
@@ -101,8 +130,8 @@
     removeUserListeners();
   }
 
-  function onUserInteract() {
-    startMusicOnce();
+  function onUserInteract(event) {
+    startMusicOnce(event);
     if (!scrolling) return;
     paused = true;
     clearTimeout(resumeTimer);
@@ -132,17 +161,9 @@
     .then(function () {
       return waitFor(function () { return isHydrated($(".lock-button")); }, 15000);
     })
-    .then(function () {
-      var site = $("main.site");
-      var lock = $(".lock-button");
-      if (site && lock && !site.classList.contains("is-unlocking") &&
-          !site.classList.contains("is-open")) {
-        lock.click(); // key slides in and turns, same as a tap
-      }
-      return waitFor(function () {
-        var s = $("main.site");
-        return s && s.classList.contains("is-open");
-      }, 20000);
+    .then(function (hydrated) {
+      if (!hydrated) return false;
+      return waitForOpen($("main.site"));
     })
     .then(function (opened) {
       if (!opened || reduceMotion) return;

@@ -1,0 +1,14 @@
+.footer-crest-wrap .footer-crest-svg {
+    display: none;
+}
+
+.footer-crest-wrap::before {
+    content: "";
+    display: block;
+    width: 100%;
+    aspect-ratio: 820 / 824;
+    background-image: url("../images/harsh-surabhi-logo.jpeg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
