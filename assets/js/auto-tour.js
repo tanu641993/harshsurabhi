@@ -6,8 +6,8 @@
  * - Any user interaction (wheel, touch, click, key) pauses the scroll; it
  *   resumes after RESUME_AFTER_MS of inactivity.
  * - It stays paused while the guest is typing in the RSVP form.
- * - Music cannot autoplay without a real tap (browser rule), so it starts on
- *   the guest's first touch/click/key press instead.
+ * - Music attempts to autoplay where browser policy allows; if blocked, it
+ *   starts on the guest's first touch/click/key press instead.
  */
 (function () {
   "use strict";
@@ -51,7 +51,7 @@
     return false;
   }
 
-  /* ---------------- music on first real gesture ---------------- */
+  /* ---------------- resume music on first real gesture ---------------- */
   var musicTried = false;
   function startMusicOnce() {
     if (musicTried) return;
