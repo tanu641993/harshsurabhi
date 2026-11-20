@@ -1,0 +1,33 @@
+.footer-crest-wrap .footer-crest-svg {
+    display: none;
+}
+
+.footer-crest-wrap::before {
+    content: "";
+    display: block;
+    width: 100%;
+    aspect-ratio: 823 / 768;
+    background-image: url("../images/harsh-surabhi-logo-v2.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.couple-monogram {
+    width: 82px;
+    height: 82px;
+    border: 0;
+    border-radius: 0;
+    background-color: transparent;
+    background-image: url("../images/harsh-surabhi-logo-v2.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    box-shadow: none;
+    color: transparent;
+    font-size: 0;
+}
+
+.couple-monogram span {
+    display: none;
+}
