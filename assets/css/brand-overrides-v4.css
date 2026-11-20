@@ -1,0 +1,19 @@
+.footer-crest-wrap::before {
+    background-size: 115% auto;
+    clip-path: circle(50% at 50% 50%);
+}
+
+.couple-monogram {
+    top: 50%;
+    left: 50%;
+    background-size: 115% auto;
+    clip-path: circle(50% at 50% 50%);
+}
+
+@media (max-width: 600px) {
+    .couple-monogram {
+        width: 58px;
+        height: 58px;
+        top: 50%;
+    }
+}
