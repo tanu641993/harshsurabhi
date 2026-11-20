@@ -1,0 +1,48 @@
+.footer-crest-wrap .footer-crest-svg {
+    display: none;
+}
+
+.footer-crest-wrap::before {
+    content: "";
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 50%;
+    clip-path: circle(50% at 50% 50%);
+    background-image: url("../images/harsh-surabhi-seal-v3.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.couple-monogram {
+    top: 50%;
+    left: 50%;
+    width: 82px;
+    height: 82px;
+    overflow: hidden;
+    border: 0;
+    border-radius: 50%;
+    clip-path: circle(50% at 50% 50%);
+    background-color: transparent;
+    background-image: url("../images/harsh-surabhi-seal-v3.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    box-shadow: none;
+    color: transparent;
+    font-size: 0;
+}
+
+.couple-monogram span {
+    display: none;
+}
+
+@media (max-width: 600px) {
+    .couple-monogram {
+        width: 58px;
+        height: 58px;
+        top: 50%;
+    }
+}
